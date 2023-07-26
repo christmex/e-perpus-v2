@@ -28,7 +28,7 @@ class BookStockRequest extends FormRequest
             'book_id' => 'required',
             'book_location_id' => 'required',
             'book_stock_qty' => 'required|integer|min:0',
-            'book_description' => 'required',
+            // 'book_description' => 'required',
         ];
     }
 

@@ -39,7 +39,7 @@ class BookStockCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // set columns from db columns.
+        CRUD::removeAllButtons();
         CRUD::addColumn([
             'name' => 'book_id', // the relationship name in your Migration
             'type' => 'select',
@@ -52,6 +52,12 @@ class BookStockCrudController extends CrudController
             'entity' => 'bookLocation', // the relationship name in your Model
             'attribute' => 'book_location_name',
         ]);
+        CRUD::addColumn([
+            'name' => 'book_description',
+            'limit' => 1000,
+        ]);
+        CRUD::setFromDb(); // set columns from db columns.
+        
         /**
          * Columns can be defined using the fluent syntax:
          * - CRUD::column('price')->type('number');
