@@ -39,9 +39,7 @@ class MemberCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // set columns from db columns.
-
-        CRUD::modifyColumn('member_profile_picture',[
+        CRUD::addColumn([
             'name'      => 'member_profile_picture', // The db column name
             'label'     => 'Member Profile Picture',
             'type'      => 'image',
@@ -49,6 +47,15 @@ class MemberCrudController extends CrudController
             'height' => '130px',
             'width'  => '130px',
         ]);
+        CRUD::addColumn([
+            'name' => 'department_id', // the relationship name in your Migration
+            'type' => 'select',
+            'entity' => 'department', // the relationship name in your Model
+            'attribute' => 'department_name',
+        ]);
+        CRUD::setFromDb(); // set columns from db columns.
+
+
         /**
          * Columns can be defined using the fluent syntax:
          * - CRUD::column('price')->type('number');
@@ -64,13 +71,21 @@ class MemberCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation(MemberRequest::class);
-        CRUD::setFromDb(); // set fields from db columns.
+        CRUD::addField([
+            'name' => 'department_id', // the relationship name in your Migration
+            'type' => 'select',
+            'entity' => 'department', // the relationship name in your Model
+            'allows_null' => false, // the relationship name in your Model
+            'attribute' => 'department_name',
+        ]);
         CRUD::field('member_profile_picture')
             ->type('upload')
             ->withFiles([
                 'disk' => 'public', // the disk where file will be stored
                 'path' => '/uploads/member/', // the path inside the disk where file will be stored
         ]);
+        CRUD::setFromDb(); // set fields from db columns.
+       
 
         /**
          * Fields can be defined using the fluent syntax:
