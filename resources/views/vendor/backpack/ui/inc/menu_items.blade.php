@@ -6,3 +6,4 @@
 <x-backpack::menu-item title="Publishers" icon="la la-question" :link="backpack_url('publisher')" />
 <x-backpack::menu-item title="Book locations" icon="la la-question" :link="backpack_url('book-location')" />
 <x-backpack::menu-item title="Departments" icon="la la-question" :link="backpack_url('department')" />
+<x-backpack::menu-item title="Members" icon="la la-question" :link="backpack_url('member')" />
