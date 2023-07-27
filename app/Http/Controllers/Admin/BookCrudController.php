@@ -20,6 +20,7 @@ class BookCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
     use \App\Http\Controllers\Admin\Operations\AddBookStockOperation;
+    use \App\Http\Controllers\Admin\Operations\RemoveBookStockOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -64,6 +65,7 @@ class BookCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
+        
         CRUD::setValidation(BookRequest::class);
         CRUD::setFromDb(); // set fields from db columns.
         CRUD::field('book_publish_year')->type('number')->attributes(['min' => 0]);

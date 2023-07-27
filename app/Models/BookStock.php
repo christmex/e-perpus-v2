@@ -18,6 +18,11 @@ class BookStock extends Model
         'book_description',
     ];
 
+    public function getBookLocationNameAttribute()
+    {
+        return $this->bookLocation->book_location_name;
+    }
+
     public function book(){
         return $this->belongsTo(Book::class,'book_id','id');
     }
