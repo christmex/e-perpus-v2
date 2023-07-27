@@ -27,4 +27,8 @@ class Transaction extends Model
     public function bookStock(){
         return $this->belongsTo(BookStock::class,'book_stock_id','id');
     }
+    public function filterShowAll()
+    {
+        return '<a class="btn btn-sm btn-link" href="?filterShowAll=filterShowAll" data-toggle="tooltip" title="Filter"><i class="la la-filter"></i> Tampilkan Semua</a>';
+    }
 }

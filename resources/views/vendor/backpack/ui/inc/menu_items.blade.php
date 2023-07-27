@@ -10,11 +10,11 @@
     <x-backpack::menu-dropdown-item title="Book locations" icon="la la-question" :link="backpack_url('book-location')" />
 
     <x-backpack::menu-dropdown-header title="Book" />
-    <x-backpack::menu-dropdown-item title="Books" icon="la la-question" :link="backpack_url('book')" />
     <x-backpack::menu-dropdown-item title="Book stocks" icon="la la-question" :link="backpack_url('book-stock')" />
 </x-backpack::menu-dropdown>
 
 <x-backpack::menu-item title="Departments" icon="la la-question" :link="backpack_url('department')" />
 <x-backpack::menu-item title="Members" icon="la la-question" :link="backpack_url('member')" />
 
+<x-backpack::menu-item title="Books" icon="la la-question" :link="backpack_url('book')" />
 <x-backpack::menu-item title="Transactions" icon="la la-question" :link="backpack_url('transaction')" />
