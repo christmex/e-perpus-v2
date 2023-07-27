@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Book;
+use App\Models\BookStock;
+use Illuminate\Support\Facades\DB;
 use Backpack\CRUD\app\Library\Widget;
+use Illuminate\Support\Facades\Route;
 use App\Http\Requests\TransactionRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -57,9 +61,9 @@ class TransactionCrudController extends CrudController
                 'close_button' => true, // show close button or not
             ]);
             CRUD::addClause('where','transaction_returned_at',NULL);
+            CRUD::addButtonFromModelFunction('top', 'filterShowAll', 'filterShowAll', 'end');
         }
         
-        CRUD::addButtonFromModelFunction('top', 'filterShowAll', 'filterShowAll', 'end');
 
         CRUD::addColumn([
             "name" => "member_id",
@@ -112,4 +116,72 @@ class TransactionCrudController extends CrudController
     {
         $this->setupCreateOperation();
     }
+
+
+
+
+
+
+
+
+
+    
+    // Bulk transaction section
+    protected function setupBulkBookReturnRoutes($segment, $routeName, $controller)
+    {
+        Route::post($segment.'/bulk-book-return', [
+            'as'        => $routeName.'.bulkBookReturn',
+            'uses'      => $controller.'@bulkBookReturn',
+            'operation' => 'bulkBookReturn',
+        ]);
+    }
+
+    public function bulkBookReturn()
+    {
+        $this->crud->hasAccessOrFail('list');
+        
+        $querySelectTransaction = $this->getSelectedTransaction($this->crud->getRequest()->input('entries'));
+
+        // Cek jika data ada
+        if(count($querySelectTransaction) < 1){
+            return Response()->json([
+                'error' => "the selected transaction entries already returned"
+            ], 500); // Status code here
+            
+        }
+        
+        DB::beginTransaction();
+        try {
+            // update book stock here
+            foreach ($querySelectTransaction as $key => $value) {
+                $value->update(['transaction_returned_at' => date('Y-m-d')]);
+                BookStock::find($value->book_stock_id)->increment('book_stock_qty',$value->transaction_book_qty);
+            }
+            DB::commit();
+            return true;
+        } catch (\Throwable $th) {
+            $th->getMessage();
+            DB::rollback();
+        }
+    }
+
+    protected function getSelectedTransaction($entries){
+        return $this->crud->model->where('transaction_returned_at','=',null)->where(function($query) use($entries) {
+            $query->whereIn('id', $entries);
+        })->get();
+    }
+
+
+
+
+    protected function setupBulkBookReturnDefaults()
+    {
+        $this->crud->allowAccess('bulk_book_return');
+
+        $this->crud->operation('list', function () {
+            $this->crud->enableBulkActions();
+            $this->crud->addButton('bottom', 'bulk_book_return', 'view', 'bulk_book_return', 'beginning');
+        });
+    }
+
 }
