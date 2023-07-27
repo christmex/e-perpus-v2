@@ -36,10 +36,13 @@ class Book extends Model
     public function getAllBookStockAttribute()
     {
         $stock = 0;
-        foreach ($this->bookStock as $key => $value) {
+        foreach ($this->bookStock as $value) {
             $stock += $value->book_stock_qty;
         }
-        foreach ($this->transactions as $key => $value) {
+        foreach ($this->transactions as $value) {
+            // if($value->transaction_returned_at == null){
+            //     $stock += $value->transaction_book_qty;
+            // }
             $stock += $value->transaction_book_qty;
         }
         return $stock;
@@ -50,11 +53,13 @@ class Book extends Model
         return $this->hasMany(BookStock::class);
     }
 
-    /**
-     * Get all of the deployments for the project.
-     */
-    public function transactions(): HasManyThrough
+    public function allTransactions(): HasManyThrough
     {
         return $this->hasManyThrough(Transaction::class, BookStock::class);
+    }
+
+    public function transactions()
+    {
+        return $this->allTransactions()->where('transaction_returned_at','=',null);
     }
 }

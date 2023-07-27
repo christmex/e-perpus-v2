@@ -30,4 +30,8 @@ class BookStock extends Model
         return $this->belongsTo(BookLocation::class,'book_location_id','id');
     }
 
+    public function transactions(){
+        return $this->hasMany(Transaction::class);
+    }
+
 }
