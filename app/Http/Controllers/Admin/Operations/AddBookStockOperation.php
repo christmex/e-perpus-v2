@@ -51,31 +51,48 @@ trait AddBookStockOperation
             $this->crud->field([
                 'name'  => 'book_id',
                 'type'  => 'hidden',
+                'tab'   => 'Form Add Stock',
                 'value' => $currentEntry->id,
             ]);
             $this->crud->field([
                 'name'          => 'book_name',
                 'label'         => 'Book Name',
                 'type'          => 'text',
+                'tab'           => 'Form Add Stock',
                 'attributes'    => ['readonly' => 'readonly'],
                 'value'         => $currentEntry->book_name,
             ]);
+
             $this->crud->field([
                 'name'          => 'book_location_id', // the relationship name in your Migration
                 'type'          => 'select',
                 'model'         => 'App\Models\BookLocation', // the relationship name in your Model
                 'allows_null'   => false,
+                'tab'           => 'Form Add Stock',
                 'attribute'     => 'book_location_name',
             ]);
             $this->crud->field([
                 'name'          => 'book_stock_qty',
                 'type'          => 'number',
+                'tab'           => 'Form Add Stock',
                 'attributes'    => ['min' => 1],
             ]);
             $this->crud->field([
                 'name'          => 'book_description',
                 'type'          => 'textarea',
+                'tab'           => 'Form Add Stock',
             ]);
+
+            foreach ($currentEntry->bookStock as $key => $value) {
+                $this->crud->field([
+                    'name'          => 'book_name_'.$currentEntry->book_name.'_'.$key,
+                    'label'         => $value->bookLocation->book_location_name,
+                    'type'          => 'text',
+                    'attributes'    => ['readonly' => 'readonly'],
+                    'value'         => $value->book_stock_qty,
+                    'tab'          => 'Book Previous Stock',
+                ]);
+            }
         });
     }
 
@@ -105,7 +122,7 @@ trait AddBookStockOperation
             
             // check jika di book_location udh ada datanya, berarti stocknya ditambah, jika tidak ada datanya berarti buat baru, bgtu juga untuk delete
             $findBookStock = BookStock::where('book_id',$inputs['book_id'])->where('book_location_id', $inputs['book_location_id'])->first();
-            if($findBookStock->count()){
+            if(!empty($findBookStock)){
                 $findBookStock->book_stock_qty = $findBookStock->book_stock_qty + $inputs['book_stock_qty'];
                 $findBookStock->save();
             }else {

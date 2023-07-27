@@ -32,4 +32,8 @@ class Book extends Model
     {
         $this->attributes['book_name'] = ucwords($value);
     }
+
+    public function bookStock(){
+        return $this->hasMany(BookStock::class);
+    }
 }
