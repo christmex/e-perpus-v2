@@ -24,7 +24,7 @@ class Transaction extends Model
     public function member(){
         return $this->belongsTo(Member::class,'member_id','id');
     }
-    // public function bookStock(){
-    //     return $this->belongsTo(BookStock::class,'book_stock_id','id');
-    // }
+    public function bookStock(){
+        return $this->belongsTo(BookStock::class,'book_stock_id','id');
+    }
 }

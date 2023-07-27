@@ -39,7 +39,24 @@ class TransactionCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        CRUD::removeButtons(['create','delete','update','show']);
+        CRUD::addColumn([
+            "name" => "member_id",
+            "type" => "select",
+            "entity" => "member",
+            "attribute" => "member_name",
+            "limit" => 1000,
+        ]);
+        CRUD::addColumn([
+            "name" => "book_stock_id",
+            "label" => "Book Name",
+            "type" => "select",
+            "entity" => "bookStock.book",
+            "attribute" => "book_name",
+            "limit" => 1000,
+        ]);
         CRUD::setFromDb(); // set columns from db columns.
+
 
         /**
          * Columns can be defined using the fluent syntax:

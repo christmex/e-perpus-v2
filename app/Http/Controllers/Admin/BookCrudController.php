@@ -51,7 +51,24 @@ class BookCrudController extends CrudController
             'width'  => '130px',
         ]);
         CRUD::setFromDb(); // set columns from db columns.
-        CRUD::column('book_publish_year')->type('number');
+        CRUD::column('book_publish_year')->type('text');
+        CRUD::column('all_book_stock')->type('number');
+        CRUD::addColumn([
+            "label" => "Loaned By",
+            "type" => "select",
+            "name" => "loaned_by",
+            "entity" => "transactions.member",
+            "attribute" => "member_name",
+            "limit" => 1000,
+        ]);
+        CRUD::addColumn([
+            "label" => "Stock Left",
+            "type" => "select",
+            "name" => "stock_left",
+            "entity" => "bookStock",
+            "attribute" => "book_stock_qty",
+            "limit" => 1000,
+        ]);
         /**
          * Columns can be defined using the fluent syntax:
          * - CRUD::column('price')->type('number');

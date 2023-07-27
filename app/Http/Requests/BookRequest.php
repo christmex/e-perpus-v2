@@ -28,7 +28,7 @@ class BookRequest extends FormRequest
         $id = $this->get('id') ?? request()->route('id');
         return [
             'book_name' => 'required|max:255|unique:books,book_name,'.$id,
-            'book_publish_year' => 'min:1',
+            'book_publish_year' => 'min:0',
             'member_profile_picture' => [
                 'sometimes',
                 File::image()->max(2 * 1024)

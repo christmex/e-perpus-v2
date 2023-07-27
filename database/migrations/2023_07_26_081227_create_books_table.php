@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('book_name');
             $table->string('book_isbn')->nullable();
-            $table->tinyInteger('book_publish_year')->nullable();
+            $table->integer('book_publish_year')->nullable();
             $table->string('book_cover')->nullable();
             $table->timestamps();
         });
