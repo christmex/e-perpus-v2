@@ -20,4 +20,11 @@ class Transaction extends Model
         'transaction_loaned_at',
         'transaction_returned_at',
     ];
+
+    public function member(){
+        return $this->belongsTo(Member::class,'member_id','id');
+    }
+    // public function bookStock(){
+    //     return $this->belongsTo(BookStock::class,'book_stock_id','id');
+    // }
 }

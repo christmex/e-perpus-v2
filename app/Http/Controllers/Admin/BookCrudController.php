@@ -21,6 +21,7 @@ class BookCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
     use \App\Http\Controllers\Admin\Operations\AddBookStockOperation;
     use \App\Http\Controllers\Admin\Operations\RemoveBookStockOperation;
+    use \App\Http\Controllers\Admin\Operations\TransactionOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.

@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Admin\Operations;
 
 use App\Models\BookStock;
+use App\Models\Transaction;
 use Backpack\CRUD\app\Http\Controllers\Operations\Concerns\HasForm;
 
-trait RemoveBookStockOperation
+trait TransactionOperation
 {
     use HasForm;
 
@@ -16,10 +17,10 @@ trait RemoveBookStockOperation
      * @param string $routeName  Prefix of the route name.
      * @param string $controller Name of the current CrudController.
      */
-    protected function setupRemoveBookStockRoutes(string $segment, string $routeName, string $controller): void
+    protected function setupTransactionRoutes(string $segment, string $routeName, string $controller): void
     {
         $this->formRoutes(
-            operationName: 'removeBookStock',
+            operationName: 'transaction',
             routesHaveIdSegment: true,
             segment: $segment,
             routeName: $routeName,
@@ -30,60 +31,67 @@ trait RemoveBookStockOperation
     /**
      * Add the default settings, buttons, etc that this operation needs.
      */
-    protected function setupRemoveBookStockDefaults(): void
+    protected function setupTransactionDefaults(): void
     {
-
         $this->formDefaults(
-            operationName: 'removeBookStock',
-            buttonStack: 'line', // alternatives: top, bottom
+            operationName: 'transaction',
+            // buttonStack: 'line', // alternatives: top, bottom
             buttonMeta: [
-                'icon' => 'la la-minus',
-                'label' => 'Remove Book Stock',
+                'icon' => 'la la-book',
+                'label' => 'Loan This Book',
             ],
         );
-        $this->crud->operation('removeBookStock', function () {
+
+        $this->crud->operation('transaction', function () {
 
             $currentEntry = $this->crud->getCurrentEntry();
             
             if(!$currentEntry->bookStock->count()) {
-                $this->crud->denyAccess('removeBookStock');
+                $this->crud->denyAccess('transaction');
                 abort(403, 'No Data');
             }
             
-            // Add the request validation here
-
             $this->crud->field([
                 'name'  => 'book_id',
                 'type'  => 'hidden',
-                'tab'   => 'Form Remove Stock',
+                'tab'   => 'Loan Form',
                 'value' => $currentEntry->id,
             ]);
             $this->crud->field([
                 'name'          => 'book_name',
                 'label'         => 'Book Name',
                 'type'          => 'text',
-                'tab'           => 'Form Remove Stock',
+                'tab'           => 'Loan Form',
                 'attributes'    => ['readonly' => 'readonly'],
                 'value'         => $currentEntry->book_name,
             ]);
             $this->crud->field([
                 'name'          => 'book_stock_id', // the relationship name in your Migration
+                'label'         => 'Select Whick Book Location',
                 'type'          => 'select',
                 'entity'        => 'bookStock', // the relationship name in your Model
                 'allows_null'   => false,
-                'tab'           => 'Form Remove Stock',
+                'tab'           => 'Loan Form',
                 'attribute'     => 'book_location_name',
+                'options'       => (function($query){
+                    return $query->where('book_stock_qty','>',0)->get();
+                }),
             ]);
             $this->crud->field([
-                'name'          => 'remove_book_stock_qty',
+                'name'          => 'member_id', // the relationship name in your Migration
+                'type'          => 'select',
+                'model'         => 'App\Models\Member', // the relationship name in your Model
+                'allows_null'   => false,
+                'tab'           => 'Loan Form',
+                'attribute'     => 'member_name',
+            ]);
+            $this->crud->field([
+                'name'          => 'transaction_book_qty',
                 'type'          => 'number',
-                'tab'           => 'Form Remove Stock',
+                'label'         => 'QTY to Loan',
+                'tab'           => 'Loan Form',
+                'default'       => 1,
                 'attributes'    => ['min' => 1],
-            ]);
-            $this->crud->field([
-                'name'          => 'remove_book_description',
-                'type'          => 'textarea',
-                'tab'           => 'Form Remove Stock',
             ]);
 
             foreach ($currentEntry->bookStock as $key => $value) {
@@ -93,7 +101,7 @@ trait RemoveBookStockOperation
                     'type'          => 'text',
                     'attributes'    => ['readonly' => 'readonly'],
                     'value'         => $value->book_stock_qty,
-                    'tab'          => 'Book Previous Stock',
+                    'tab'           => 'Book Current Stock',
                 ]);
             }
             
@@ -104,9 +112,9 @@ trait RemoveBookStockOperation
      * Method to handle the GET request and display the View with a Backpack form
      *
      */
-    public function getRemoveBookStockForm(?int $id = null) : \Illuminate\Contracts\View\View
+    public function getTransactionForm(?int $id = null) : \Illuminate\Contracts\View\View
     {
-        $this->crud->hasAccessOrFail('removeBookStock');
+        $this->crud->hasAccessOrFail('transaction');
 
         return $this->formView($id);
     }
@@ -116,25 +124,28 @@ trait RemoveBookStockOperation
     *
     * @return array|\Illuminate\Http\RedirectResponse
     */
-    public function postRemoveBookStockForm(?int $id = null)
+    public function postTransactionForm(?int $id = null)
     {
-        $this->crud->hasAccessOrFail('removeBookStock');
+        $this->crud->hasAccessOrFail('transaction');
 
         return $this->formAction($id, function ($inputs, $entry) {
-            // You logic goes here...
-            // dd('got to ' . __METHOD__, $inputs, $entry);
-            // dd(empty($inputs['book_id']));
+            
             if(!empty($inputs['book_id'])){
                 // $findBookStock = BookStock::where('book_id',$inputs['book_id'])->where('book_location_id', $inputs['book_location_id'])->first();
                 $findBookStock = BookStock::find($inputs['book_stock_id']);
                 if(!empty($findBookStock)){
-                    if($findBookStock->book_stock_qty - $inputs['remove_book_stock_qty'] == 0){
-                        $findBookStock->delete();
-                        \Alert::success('Successfully removed book stock!')->flash();
-                    }elseif($findBookStock->book_stock_qty - $inputs['remove_book_stock_qty'] > 0){
-                        $findBookStock->book_stock_qty = $findBookStock->book_stock_qty - $inputs['remove_book_stock_qty'];
-                        $findBookStock->save();
-                        \Alert::success('Successfully removed book stock!')->flash();
+                    if($findBookStock->book_stock_qty - $inputs['transaction_book_qty'] >= 0){
+                        $findBookStock->book_stock_qty = $findBookStock->book_stock_qty - $inputs['transaction_book_qty'];
+
+                        if($findBookStock->save()){
+                            Transaction::create([
+                                'book_stock_id' => $findBookStock->id,
+                                'member_id' => $inputs['member_id'],
+                                'transaction_book_qty' => $inputs['transaction_book_qty'],
+                                'transaction_loaned_at' => date('Y-m-d'),
+                            ]);
+                        }
+                        \Alert::success('Successfully loaned the book!')->flash();
                     }else {
                         \Alert::error('Check your book stock qty, your input more bigger than the actual stock')->flash();
                     }

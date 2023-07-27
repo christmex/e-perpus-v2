@@ -62,7 +62,6 @@ trait AddBookStockOperation
                 'attributes'    => ['readonly' => 'readonly'],
                 'value'         => $currentEntry->book_name,
             ]);
-
             $this->crud->field([
                 'name'          => 'book_location_id', // the relationship name in your Migration
                 'type'          => 'select',
