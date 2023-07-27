@@ -16,3 +16,5 @@
 
 <x-backpack::menu-item title="Departments" icon="la la-question" :link="backpack_url('department')" />
 <x-backpack::menu-item title="Members" icon="la la-question" :link="backpack_url('member')" />
+
+<x-backpack::menu-item title="Transactions" icon="la la-question" :link="backpack_url('transaction')" />
