@@ -12,4 +12,12 @@ class Transaction extends Model
     use HasFactory;
 
     public $loanExpDays = 3;
+
+    protected $fillable = [
+        'book_stock_id',
+        'member_id',
+        'transaction_book_qty',
+        'transaction_loaned_at',
+        'transaction_returned_at',
+    ];
 }
