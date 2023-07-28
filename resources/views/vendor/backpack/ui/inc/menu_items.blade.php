@@ -11,6 +11,7 @@
 
     <x-backpack::menu-dropdown-header title="Book" />
     <x-backpack::menu-dropdown-item title="Book stocks" icon="la la-question" :link="backpack_url('book-stock')" />
+    <x-backpack::menu-dropdown-item title="Books" icon="la la-question" :link="backpack_url('book')" />
 </x-backpack::menu-dropdown>
 
 
@@ -23,7 +24,8 @@
     <x-backpack::menu-dropdown-item title="Penalty statuses" icon="la la-question" :link="backpack_url('penalty-status')" />
 </x-backpack::menu-dropdown>
 
-
-<x-backpack::menu-item title="Books" icon="la la-question" :link="backpack_url('book')" />
-<x-backpack::menu-item title="Transactions" icon="la la-question" :link="backpack_url('transaction')" />
-<x-backpack::menu-item title="Penalties" icon="la la-question" :link="backpack_url('penalty')" />
+<x-backpack::menu-dropdown title="Transaction" icon="la la-exchange-alt">
+    <x-backpack::menu-dropdown-item title="Loan Book" icon="la la-question" :link="backpack_url('loan-book')" />
+    <x-backpack::menu-dropdown-item title="Return Book" icon="la la-question" :link="backpack_url('transaction')" />
+    <x-backpack::menu-dropdown-item title="Penalties" icon="la la-question" :link="backpack_url('penalty')" />
+</x-backpack::menu-dropdown>

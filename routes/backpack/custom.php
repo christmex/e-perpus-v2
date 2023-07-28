@@ -27,4 +27,6 @@ Route::group([
     Route::crud('transaction', 'TransactionCrudController');
     Route::crud('penalty-status', 'PenaltyStatusCrudController');
     Route::crud('penalty', 'PenaltyCrudController');
+    // Route::get('loan_book', 'LoanBookController@index')->name('page.loan_book.index');
+    Route::crud('loan-book', 'LoanBookController');
 }); // this should be the absolute last line of this file

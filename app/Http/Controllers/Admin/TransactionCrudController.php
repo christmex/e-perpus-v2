@@ -172,20 +172,22 @@ class TransactionCrudController extends CrudController
                 // increase the book stock in book_stocks table
                 BookStock::find($value->book_stock_id)->increment('book_stock_qty',$value->transaction_book_qty);
 
-                // Check if this transaction 
-                $loanedDate = Carbon::createFromFormat('Y-m-d', $value->transaction_loaned_at);
-                $threeDaysNext = $loanedDate->addDays(env('loanExpDays'))->format('Y-m-d');
-                if(date('Y-m-d') > $threeDaysNext){
-                    // Calculate the difference between the two dates.
-                    $now = date('Y-m-d');
-                    $diff = Carbon::createFromFormat('Y-m-d', $threeDaysNext)->diff($now);
-                    $penaltyCost = $diff->days * env('penaltyCost');
-                    // dd($value->id, $now,$threeDaysNext, $diff->days,$penaltyCost);
-                    Penalty::create([
-                        'transaction_id' => $value->id,
-                        'penalty_status' => 'unpaid',
-                        'penalty_cost' => $penaltyCost,
-                    ]);
+                // Check if this transaction have pelanty
+                if(!empty(env('loanExpDays'))){
+                    $loanedDate = Carbon::createFromFormat('Y-m-d', $value->transaction_loaned_at);
+                    $threeDaysNext = $loanedDate->addDays(env('loanExpDays'))->format('Y-m-d');
+                    if(date('Y-m-d') > $threeDaysNext){
+                        // Calculate the difference between the two dates.
+                        $now = date('Y-m-d');
+                        $diff = Carbon::createFromFormat('Y-m-d', $threeDaysNext)->diff($now);
+                        $penaltyCost = $diff->days * env('penaltyCost');
+                        // dd($value->id, $now,$threeDaysNext, $diff->days,$penaltyCost);
+                        Penalty::create([
+                            'transaction_id' => $value->id,
+                            'penalty_status' => 'unpaid',
+                            'penalty_cost' => $penaltyCost,
+                        ]);
+                    }
                 }
             }
             DB::commit();

@@ -73,8 +73,9 @@ trait TransactionOperation
                 'allows_null'   => false,
                 'tab'           => 'Loan Form',
                 'attribute'     => 'book_location_name',
-                'options'       => (function($query){
-                    return $query->where('book_stock_qty','>',0)->get();
+                'options'       => (function($query) use($currentEntry){
+                    return $currentEntry->bookStock->where('book_stock_qty','>',0);
+                    // return $query->where('book_stock_qty','>',0)->get();
                 }),
             ]);
             $this->crud->field([
