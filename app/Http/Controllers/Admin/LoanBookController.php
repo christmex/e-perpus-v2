@@ -29,6 +29,7 @@ class LoanBookController extends CrudController
 
     protected function setupListOperation()
     {
+        CRUD::setOperationSetting('lineButtonsAsDropdown', false);
         CRUD::addColumn([
             'name'      => 'book_cover', // The db column name
             'type'      => 'image',
@@ -39,19 +40,19 @@ class LoanBookController extends CrudController
         CRUD::column('book_name');
         CRUD::column('all_book_stock')->type('number');
         CRUD::addColumn([
-            "label" => "Loaned By",
-            "type" => "select",
-            "name" => "loaned_by",
-            "entity" => "transactions.member",
-            "attribute" => "member_name",
-            "limit" => 1000,
-        ]);
-        CRUD::addColumn([
             "label" => "Stock Left",
             "type" => "select",
             "name" => "stock_left",
             "entity" => "bookStock",
             "attribute" => "book_stock_qty",
+            "limit" => 1000,
+        ]);
+        CRUD::addColumn([
+            "label" => "Loaned By",
+            "type" => "select",
+            "name" => "loaned_by",
+            "entity" => "transactions.member",
+            "attribute" => "member_name",
             "limit" => 1000,
         ]);
     }
