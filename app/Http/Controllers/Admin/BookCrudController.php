@@ -54,14 +54,6 @@ class BookCrudController extends CrudController
         CRUD::column('book_publish_year')->type('text');
         CRUD::column('all_book_stock')->type('number');
         CRUD::addColumn([
-            "label" => "Loaned By",
-            "type" => "select",
-            "name" => "loaned_by",
-            "entity" => "transactions.member",
-            "attribute" => "member_name",
-            "limit" => 1000,
-        ]);
-        CRUD::addColumn([
             "label" => "Stock Left",
             "type" => "select",
             "name" => "stock_left",
@@ -69,6 +61,23 @@ class BookCrudController extends CrudController
             "attribute" => "book_stock_qty",
             "limit" => 1000,
         ]);
+        CRUD::addColumn([
+            "label" => "Book Location",
+            "type" => "select",
+            "name" => "book_location",
+            "entity" => "bookStock",
+            "attribute" => "book_location_name",
+            "limit" => 1000,
+        ]);
+        CRUD::addColumn([
+            "label" => "Loaned By",
+            "type" => "select",
+            "name" => "loaned_by",
+            "entity" => "transactions.member",
+            "attribute" => "member_name",
+            "limit" => 1000,
+        ]);
+
         /**
          * Columns can be defined using the fluent syntax:
          * - CRUD::column('price')->type('number');
