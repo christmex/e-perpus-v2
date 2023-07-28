@@ -19,15 +19,15 @@ class Member extends Model
         'member_profile_picture',
     ];
 
-    public static function boot()
-    {
-        parent::boot();
-        static::deleting(function($obj) {
-            if($obj->member_profile_picture){
-                Storage::disk('public')->delete($obj->member_profile_picture);
-            }
-        });
-    }
+    // public static function boot()
+    // {
+    //     parent::boot();
+    //     static::deleting(function($obj) {
+    //         if($obj->member_profile_picture){
+    //             Storage::disk('public')->delete($obj->member_profile_picture);
+    //         }
+    //     });
+    // }
     public function setMemberNameAttribute($value)
     {
         $this->attributes['member_name'] = ucwords($value);

@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\MemberRequest;
+use App\Http\Requests\PenaltyRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
- * Class MemberCrudController
+ * Class PenaltyCrudController
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class MemberCrudController extends CrudController
+class PenaltyCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
@@ -26,9 +26,9 @@ class MemberCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\Member::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/member');
-        CRUD::setEntityNameStrings('member', 'members');
+        CRUD::setModel(\App\Models\Penalty::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/penalty');
+        CRUD::setEntityNameStrings('penalty', 'penalties');
     }
 
     /**
@@ -39,21 +39,36 @@ class MemberCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        CRUD::removeButtons(['create','show','delete']);
         CRUD::addColumn([
-            'name'      => 'member_profile_picture', // The db column name
-            'type'      => 'image',
-            'disk'   => 'public', 
-            'height' => '130px',
-            'width'  => '130px',
+            "name" => "member",
+            "type" => "select",
+            "entity" => "transaction.member",
+            "attribute" => "member_name",
+            "limit" => 1000,
         ]);
+        // CRUD::addColumn([
+        //     'name'          => 'book', // the relationship name in your Migration
+        //     'type'          => 'select',
+        //     'entity'         => 'book_name', // the relationship name in your Model
+        //     'attribute'     => 'book_name',
+        // ]);
         CRUD::addColumn([
-            'name' => 'department_id', // the relationship name in your Migration
-            'type' => 'select',
-            'entity' => 'department', // the relationship name in your Model
-            'attribute' => 'department_name',
+            "name" => "transaction_id",
+            "label" => "Book Name",
+            "type" => "select",
+            "entity" => "transaction.bookStock",
+            "attribute" => "book_name",
+            "limit" => 1000,
         ]);
+        // CRUD::addColumn([
+        //     "name" => "book",
+        //     "type" => "select",
+        //     "entity" => "transaction",
+        //     "attribute" => "book_name",
+        //     "limit" => 1000,
+        // ]);
         CRUD::setFromDb(); // set columns from db columns.
-
 
         /**
          * Columns can be defined using the fluent syntax:
@@ -69,22 +84,23 @@ class MemberCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation(MemberRequest::class);
-        CRUD::addField([
-            'name' => 'department_id', // the relationship name in your Migration
-            'type' => 'select',
-            'entity' => 'department', // the relationship name in your Model
-            'allows_null' => false, // the relationship name in your Model
-            'attribute' => 'department_name',
-        ]);
+        CRUD::setValidation(PenaltyRequest::class);
 
-        CRUD::setFromDb(); // set fields from db columns.
-        CRUD::field('member_profile_picture')
-            ->type('upload')
-            ->withFiles([
-                'disk' => 'public', // the disk where file will be stored
-                'path' => '/uploads/members/', // the path inside the disk where file will be stored
+        $string = env('penaltyStatus');
+        // Remove the single quotes and convert it to a valid PHP array format
+        $validArrayString = str_replace(['[', ']', '=>'], ['[', ']', '=>'], $string);
+        // Now, convert the valid PHP array string to an actual array
+        $array = eval("return $validArrayString;");
+
+        CRUD::addField([
+            'name' => 'penalty_status', // the relationship name in your Migration
+            'type' => 'select_from_array',
+            'options'     => $array,
+            'allows_null' => false,
         ]);
+        CRUD::field('penalty_cost')->attributes(['disabled' => 'disabled']);
+        CRUD::field('transaction_id')->type('hidden');
+        CRUD::setFromDb(); // set fields from db columns.
 
         /**
          * Fields can be defined using the fluent syntax:
@@ -101,15 +117,5 @@ class MemberCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
-    }
-
-    public function setupDeleteOperation()
-    {
-        CRUD::field('member_profile_picture')
-            ->type('upload')
-            ->withFiles([
-                'disk' => 'public', // the disk where file will be stored
-                'path' => '/uploads/members/', // the path inside the disk where file will be stored
-        ]);
     }
 }

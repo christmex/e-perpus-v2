@@ -11,8 +11,6 @@ class Transaction extends Model
     use CrudTrait;
     use HasFactory;
 
-    public $loanExpDays = 3;
-
     protected $fillable = [
         'book_stock_id',
         'member_id',
@@ -23,6 +21,9 @@ class Transaction extends Model
 
     public function member(){
         return $this->belongsTo(Member::class,'member_id','id');
+    }
+    public function penalty(){
+        return $this->hasOne(Penalty::class,);
     }
     public function bookStock(){
         return $this->belongsTo(BookStock::class,'book_stock_id','id');

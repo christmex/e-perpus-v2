@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Carbon\Carbon;
 use App\Models\Book;
 use App\Models\BookStock;
 use Illuminate\Support\Facades\DB;
 use Backpack\CRUD\app\Library\Widget;
 use Illuminate\Support\Facades\Route;
 use App\Http\Requests\TransactionRequest;
+use App\Models\Penalty;
+use App\Models\Transaction;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -44,8 +47,9 @@ class TransactionCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        // dd(gettype(env('penaltyStatus')));
         CRUD::removeButtons(['create','delete','update','show']);
-        CRUD::orderBy('transaction_returned_at','asc');
+        CRUD::orderBy('transaction_returned_at','desc');
         if(request('filterShowAll')){
             Widget::add([
                 'type'         => 'alert',
@@ -70,6 +74,13 @@ class TransactionCrudController extends CrudController
             "type" => "select",
             "entity" => "member",
             "attribute" => "member_name",
+            "limit" => 1000,
+        ]);
+        CRUD::addColumn([
+            "name" => "penalty_id",
+            "type" => "select",
+            "entity" => "penalty",
+            "attribute" => "penalty_cost",
             "limit" => 1000,
         ]);
         CRUD::addColumn([
@@ -154,14 +165,37 @@ class TransactionCrudController extends CrudController
         try {
             // update book stock here
             foreach ($querySelectTransaction as $key => $value) {
+                
+                // Set returned at in transaction table
                 $value->update(['transaction_returned_at' => date('Y-m-d')]);
+
+                // increase the book stock in book_stocks table
                 BookStock::find($value->book_stock_id)->increment('book_stock_qty',$value->transaction_book_qty);
+
+                // Check if this transaction 
+                $loanedDate = Carbon::createFromFormat('Y-m-d', $value->transaction_loaned_at);
+                $threeDaysNext = $loanedDate->addDays(env('loanExpDays'))->format('Y-m-d');
+                if(date('Y-m-d') > $threeDaysNext){
+                    // Calculate the difference between the two dates.
+                    $now = date('Y-m-d');
+                    $diff = Carbon::createFromFormat('Y-m-d', $threeDaysNext)->diff($now);
+                    $penaltyCost = $diff->days * env('penaltyCost');
+                    // dd($value->id, $now,$threeDaysNext, $diff->days,$penaltyCost);
+                    Penalty::create([
+                        'transaction_id' => $value->id,
+                        'penalty_status' => 'unpaid',
+                        'penalty_cost' => $penaltyCost,
+                    ]);
+                }
             }
             DB::commit();
             return true;
         } catch (\Throwable $th) {
-            $th->getMessage();
             DB::rollback();
+            return Response()->json([
+                'error' => $th->getMessage()
+            ], 500); // Status code here
+            
         }
     }
 
