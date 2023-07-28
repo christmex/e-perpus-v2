@@ -33,6 +33,11 @@ class Member extends Model
         $this->attributes['member_name'] = ucwords($value);
     }
 
+    public function getDepartmentNameAttribute()
+    {
+        return $this->department->department_name;
+    }
+
     public function department(){
         return $this->belongsTo(Department::class,'department_id','id');
     }

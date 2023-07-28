@@ -47,6 +47,13 @@ class PenaltyCrudController extends CrudController
             "attribute" => "member_name",
             "limit" => 1000,
         ]);
+        CRUD::addColumn([
+            "name" => "member_department",
+            "type" => "select",
+            "entity" => "transaction.member",
+            "attribute" => "department_name",
+            "limit" => 1000,
+        ]);
         // CRUD::addColumn([
         //     'name'          => 'book', // the relationship name in your Migration
         //     'type'          => 'select',
