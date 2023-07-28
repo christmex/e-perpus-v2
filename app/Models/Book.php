@@ -18,15 +18,15 @@ class Book extends Model
         'book_cover',
     ];
 
-    public static function boot()
-    {
-        parent::boot();
-        static::deleting(function($obj) {
-            if($obj->book_cover){
-                Storage::disk('public')->delete($obj->book_cover);
-            }
-        });
-    }
+    // public static function boot()
+    // {
+    //     parent::boot();
+    //     static::deleting(function($obj) {
+    //         if($obj->book_cover){
+    //             Storage::disk('public')->delete($obj->book_cover);
+    //         }
+    //     });
+    // }
 
     public function setBookNameAttribute($value)
     {

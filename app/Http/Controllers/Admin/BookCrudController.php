@@ -118,4 +118,14 @@ class BookCrudController extends CrudController
     {
         $this->setupCreateOperation();
     }
+
+    public function setupDeleteOperation()
+    {
+        CRUD::field('book_cover')
+            ->type('upload')
+            ->withFiles([
+                'disk' => 'public', // the disk where file will be stored
+                'path' => '/uploads/books/', // the path inside the disk where file will be stored
+        ]);
+    }
 }
