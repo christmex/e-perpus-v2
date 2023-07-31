@@ -18,6 +18,16 @@ class BookStock extends Model
         'book_description',
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+        static::deleting(function($obj) {
+            if($obj->id){
+                Transaction::where('book_stock_id', $obj->id)->where('transaction_returned_at', '!=',NULL)->delete();
+            }
+        });
+    }
+
     public function getBookLocationNameAttribute()
     {
         return $this->bookLocation->book_location_name;

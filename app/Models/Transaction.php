@@ -19,6 +19,16 @@ class Transaction extends Model
         'transaction_returned_at',
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+        static::deleting(function($obj) {
+            if($obj->id){
+                Penalty::where('transaction_id', $obj->id)->where('penalty_status', '!=','unpaid')->delete();
+            }
+        });
+    }
+
     public function member(){
         return $this->belongsTo(Member::class,'member_id','id');
     }
