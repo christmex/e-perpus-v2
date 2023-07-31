@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Operations;
 use App\Models\BookStock;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\TransactionRequest;
 use Backpack\CRUD\app\Http\Controllers\Operations\Concerns\HasForm;
 
 trait TransactionOperation
@@ -44,6 +45,7 @@ trait TransactionOperation
         );
 
         $this->crud->operation('transaction', function () {
+            $this->crud->setValidation(TransactionRequest::class);
 
             $currentEntry = $this->crud->getCurrentEntry();
             

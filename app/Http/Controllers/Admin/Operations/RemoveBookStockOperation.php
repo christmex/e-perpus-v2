@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Operations;
 
 use App\Models\BookStock;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\BookStockRequest;
 use Backpack\CRUD\app\Http\Controllers\Operations\Concerns\HasForm;
 
 trait RemoveBookStockOperation
@@ -44,6 +45,8 @@ trait RemoveBookStockOperation
         );
         $this->crud->operation('removeBookStock', function () {
 
+            $this->crud->setValidation(BookStockRequest::class);
+
             $currentEntry = $this->crud->getCurrentEntry();
             
             if(!$currentEntry->bookStock->count()) {
@@ -68,7 +71,7 @@ trait RemoveBookStockOperation
                 'value'         => $currentEntry->book_name,
             ]);
             $this->crud->field([
-                'name'          => 'book_stock_id', // the relationship name in your Migration
+                'name'          => 'book_location_id', // the relationship name in your Migration
                 'type'          => 'select',
                 'entity'        => 'bookStock', // the relationship name in your Model
                 'allows_null'   => false,
@@ -80,7 +83,7 @@ trait RemoveBookStockOperation
                 }),
             ]);
             $this->crud->field([
-                'name'          => 'remove_book_stock_qty',
+                'name'          => 'book_stock_qty',
                 'type'          => 'number',
                 'tab'           => 'Form Remove Stock',
                 'attributes'    => ['min' => 1],
@@ -131,21 +134,33 @@ trait RemoveBookStockOperation
             // dd(empty($inputs['book_id']));
             if(!empty($inputs['book_id'])){
                 // $findBookStock = BookStock::where('book_id',$inputs['book_id'])->where('book_location_id', $inputs['book_location_id'])->first();
-                $findBookStock = BookStock::find($inputs['book_stock_id']);
+                $findBookStock = BookStock::find($inputs['book_location_id']);
                 if(!empty($findBookStock)){
                     DB::beginTransaction();
                     try {
-                        if($findBookStock->book_stock_qty - $inputs['remove_book_stock_qty'] == 0){
-                            if($findBookStock->transactions->where('transaction_returned_at','!=',NULL)->count()){
-                                $findBookStock->delete();
-                                \Alert::success('Successfully removed book stock!')->flash();
-                            }else {
-                                $findBookStock->book_stock_qty = $findBookStock->book_stock_qty - $inputs['remove_book_stock_qty'];
+                        if($findBookStock->book_stock_qty - $inputs['book_stock_qty'] == 0){
+                            
+                            if($findBookStock->transactions->where('transaction_returned_at','=',NULL)->count()){
+                                $findBookStock->book_stock_qty = $findBookStock->book_stock_qty - $inputs['book_stock_qty'];
                                 $findBookStock->save();
                                 \Alert::success('Successfully removed book stock!')->flash();
+                            }else {
+                                $findBookStock->delete();
+                                \Alert::success('Successfully removed book stock!')->flash();
                             }
-                        }elseif($findBookStock->book_stock_qty - $inputs['remove_book_stock_qty'] > 0){
-                            $findBookStock->book_stock_qty = $findBookStock->book_stock_qty - $inputs['remove_book_stock_qty'];
+
+
+                            // dd($findBookStock->transactions->where('transaction_returned_at','!=',NULL));
+                            // if($findBookStock->transactions->where('transaction_returned_at','!=',NULL)->count()){
+                            //     $findBookStock->delete();
+                            //     \Alert::success('Successfully removed book stock!')->flash();
+                            // }else {
+                            //     $findBookStock->book_stock_qty = $findBookStock->book_stock_qty - $inputs['book_stock_qty'];
+                            //     $findBookStock->save();
+                            //     \Alert::success('Successfully removed book stock!')->flash();
+                            // }
+                        }elseif($findBookStock->book_stock_qty - $inputs['book_stock_qty'] > 0){
+                            $findBookStock->book_stock_qty = $findBookStock->book_stock_qty - $inputs['book_stock_qty'];
                             $findBookStock->save();
                             \Alert::success('Successfully removed book stock!')->flash();
                         }else {
