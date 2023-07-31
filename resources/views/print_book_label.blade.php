@@ -22,6 +22,7 @@
             flex-direction: column;
             /* justify-content: space-around;
             align-content: space-around; */
+            min-height:170px;
         }
         .flex > div{
             flex: 1
@@ -37,8 +38,8 @@
             width:160px;
 
             float:left;
-            min-height:100%
-            /* min-height:170px; */
+            /* min-height:100% */
+            min-height:170px;
         }
         .box .top {
             border-bottom: 2px solid black
