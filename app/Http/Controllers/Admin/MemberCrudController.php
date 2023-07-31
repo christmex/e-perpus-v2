@@ -71,11 +71,23 @@ class MemberCrudController extends CrudController
     {
         CRUD::setValidation(MemberRequest::class);
         CRUD::addField([
-            'name' => 'department_id', // the relationship name in your Migration
-            'type' => 'select',
-            'entity' => 'department', // the relationship name in your Model
-            'allows_null' => false, // the relationship name in your Model
+            // 'name' => 'department_id', // the relationship name in your Migration
+            // 'type' => 'select',
+            // 'entity' => 'department', // the relationship name in your Model
+            // 'allows_null' => false, // the relationship name in your Model
+            // 'attribute' => 'department_name',
+
+            'name' => 'department_id',
+            'type' => 'livewire_select',
+            'label' => 'Department Name',
+            'hint' => 'Write more for best result',
             'attribute' => 'department_name',
+            'default' => request()->has('department_id') ? request('department_id') : NULL,
+            'model' => \App\Models\Department::class,
+            'attributes' => [
+                'autocomplete' => 'off'
+            ],
+
         ]);
 
         CRUD::setFromDb(); // set fields from db columns.

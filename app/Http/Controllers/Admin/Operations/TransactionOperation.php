@@ -80,12 +80,26 @@ trait TransactionOperation
                 }),
             ]);
             $this->crud->field([
-                'name'          => 'member_id', // the relationship name in your Migration
-                'type'          => 'select',
-                'model'         => 'App\Models\Member', // the relationship name in your Model
-                'allows_null'   => false,
+                // 'name'          => 'member_id', // the relationship name in your Migration
+                // 'type'          => 'select',
+                // 'model'         => 'App\Models\Member', // the relationship name in your Model
+                // 'allows_null'   => false,
+                // 'tab'           => 'Loan Form',
+                // 'attribute'     => 'member_name',
+
+                'name' => 'member_id',
+                'type' => 'livewire_select',
+                'label' => 'Member Name',
+                'hint' => 'Write more for best result',
+                'attribute' => 'member_name',
+                'default' => request()->has('member_id') ? request('member_id') : NULL,
+                'model' => \App\Models\Member::class,
+                'attributes' => [
+                    'autocomplete' => 'off'
+                ],
                 'tab'           => 'Loan Form',
-                'attribute'     => 'member_name',
+
+                
             ]);
             $this->crud->field([
                 'name'          => 'transaction_book_qty',
