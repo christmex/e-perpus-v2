@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin\Operations;
 
 use Backpack\CRUD\app\Http\Controllers\Operations\Concerns\HasForm;
 
-trait PrintBookLabelOperation
+trait PrintBookCardOperation
 {
     use HasForm;
 
@@ -15,10 +15,10 @@ trait PrintBookLabelOperation
      * @param string $routeName  Prefix of the route name.
      * @param string $controller Name of the current CrudController.
      */
-    protected function setupPrintBookLabelRoutes(string $segment, string $routeName, string $controller): void
+    protected function setupPrintBookCardRoutes(string $segment, string $routeName, string $controller): void
     {
         $this->formRoutes(
-            operationName: 'printBookLabel',
+            operationName: 'printBookCard',
             routesHaveIdSegment: true,
             segment: $segment,
             routeName: $routeName,
@@ -29,21 +29,21 @@ trait PrintBookLabelOperation
     /**
      * Add the default settings, buttons, etc that this operation needs.
      */
-    protected function setupPrintBookLabelDefaults(): void
+    protected function setupPrintBookCardDefaults(): void
     {
         $this->formDefaults(
-            operationName: 'printBookLabel',
+            operationName: 'printBookCard',
             buttonStack: 'line', // alternatives: top, bottom
             buttonMeta: [
                 'icon' => 'la la-print',
-                'label' => 'Print Book Label',
+                'label' => 'Print Book Card',
                 'wrapper' => [
                      'target' => '_blank',
                 ],
             ],
         );
 
-        $this->crud->operation('printBookLabel', function () {
+        $this->crud->operation('printBookCard', function () {
             $currentEntry = $this->crud->getCurrentEntry();
 
             $this->crud->field([
@@ -64,11 +64,11 @@ trait PrintBookLabelOperation
 
             $this->crud->removeSaveAction('save_and_back');
             $this->crud->addSaveAction([
-                'name' => 'print_book_label',
+                'name' => 'print_book_card',
                 'visible' => function ($crud){
-                    return $crud->hasAccess('printBookLabel');
+                    return $crud->hasAccess('printBookCard');
                 },
-                'button_text' => 'Print Book Label',
+                'button_text' => 'Print Book Card',
             ]);
         });
     }
@@ -77,9 +77,9 @@ trait PrintBookLabelOperation
      * Method to handle the GET request and display the View with a Backpack form
      *
      */
-    public function getPrintBookLabelForm(?int $id = null) : \Illuminate\Contracts\View\View
+    public function getPrintBookCardForm(?int $id = null) : \Illuminate\Contracts\View\View
     {
-        $this->crud->hasAccessOrFail('printBookLabel');
+        $this->crud->hasAccessOrFail('printBookCard');
 
         return $this->formView($id);
     }
@@ -89,9 +89,9 @@ trait PrintBookLabelOperation
     *
     * @return array|\Illuminate\Http\RedirectResponse
     */
-    public function postPrintBookLabelForm(?int $id = null)
+    public function postPrintBookCardForm(?int $id = null)
     {
-        $this->crud->hasAccessOrFail('printBookLabel');
+        $this->crud->hasAccessOrFail('printBookCard');
 
         if ($id) {
             // Get entry ID from Request (makes sure its the last ID for nested resources)
@@ -101,16 +101,7 @@ trait PrintBookLabelOperation
 
         $request = request()->all();
 
-        // dd($request['book_stock_id'][3]);
-        // $entry->bookStock = $entry->bookStock->where('id',3)->take($request['book_stock_id'][3]);
-        // dd($entry);
-
-
-        // for ($i=0; $i < count($request['book_stock_id']); $i++) { 
-        //     $entry->bookStock = $entry->bookStock->where('id')->limit($request['book_stock_id'][$i]);
-        // }
-        // dd();
-        return view('print_book_label',compact('entry','request'));
+        return view('print_book_card',compact('entry','request'));
 
     }
 }

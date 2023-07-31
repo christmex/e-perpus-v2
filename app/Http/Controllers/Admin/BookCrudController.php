@@ -23,6 +23,7 @@ class BookCrudController extends CrudController
     use \App\Http\Controllers\Admin\Operations\RemoveBookStockOperation;
     use \App\Http\Controllers\Admin\Operations\TransactionOperation;
     use \App\Http\Controllers\Admin\Operations\PrintBookLabelOperation;
+    use \App\Http\Controllers\Admin\Operations\PrintBookCardOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
