@@ -21,4 +21,7 @@ class BookLocation extends Model
     {
         $this->attributes['book_location_label'] = ucwords($value);
     }
+    public function bookStocks(){
+        return $this->hasMany(BookStock::class);
+    }
 }

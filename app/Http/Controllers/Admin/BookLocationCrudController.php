@@ -39,8 +39,16 @@ class BookLocationCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // set columns from db columns.
 
+        CRUD::setFromDb(); // set columns from db columns.
+        CRUD::addColumn([
+            "label" => "Books",
+            "type" => "select",
+            "name" => "book_name",
+            "entity" => "bookStocks.book",
+            "attribute" => "book_name",
+            "limit" => 1000,
+        ]);
         /**
          * Columns can be defined using the fluent syntax:
          * - CRUD::column('price')->type('number');
