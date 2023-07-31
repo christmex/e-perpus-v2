@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Operations;
 
 use App\Models\BookStock;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\DB;
 use Backpack\CRUD\app\Http\Controllers\Operations\Concerns\HasForm;
 
 trait TransactionOperation
@@ -136,17 +137,29 @@ trait TransactionOperation
                 $findBookStock = BookStock::find($inputs['book_stock_id']);
                 if(!empty($findBookStock)){
                     if($findBookStock->book_stock_qty - $inputs['transaction_book_qty'] >= 0){
-                        $findBookStock->book_stock_qty = $findBookStock->book_stock_qty - $inputs['transaction_book_qty'];
-
-                        if($findBookStock->save()){
-                            Transaction::create([
-                                'book_stock_id' => $findBookStock->id,
-                                'member_id' => $inputs['member_id'],
-                                'transaction_book_qty' => $inputs['transaction_book_qty'],
-                                'transaction_loaned_at' => date('Y-m-d'),
-                            ]);
+                        if(Transaction::where('member_id',$inputs['member_id'])->where('transaction_returned_at',NULL)->first()){
+                            \Alert::error('This member still loan 1 book and not return until now!')->flash();
+                        }else {
+                            DB::beginTransaction();
+                            try {
+                                $findBookStock->book_stock_qty = $findBookStock->book_stock_qty - $inputs['transaction_book_qty'];
+    
+                                if($findBookStock->save()){
+                                    Transaction::create([
+                                        'book_stock_id' => $findBookStock->id,
+                                        'member_id' => $inputs['member_id'],
+                                        'transaction_book_qty' => $inputs['transaction_book_qty'],
+                                        'transaction_loaned_at' => date('Y-m-d'),
+                                    ]);
+                                }
+                                DB::commit();
+                                \Alert::success('Successfully loaned the book!')->flash();
+                            } catch (\Throwable $th) {
+                                DB::rollback();
+                                \Alert::error($th->getMessage())->flash();
+                            }
                         }
-                        \Alert::success('Successfully loaned the book!')->flash();
+                        
                     }else {
                         \Alert::error('Check your book stock qty, your input more bigger than the actual stock')->flash();
                     }
