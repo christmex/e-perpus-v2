@@ -3,15 +3,15 @@
 
 
 <x-backpack::menu-dropdown title="Manage Book" icon="la la-book">
+<x-backpack::menu-dropdown-header title="Book" />
+    <x-backpack::menu-dropdown-item title="Books" icon="la la-book" :link="backpack_url('book')" />
+    <x-backpack::menu-dropdown-item title="Book stocks" icon="la la-box-open" :link="backpack_url('book-stock')" />
+    
     <x-backpack::menu-dropdown-header title="Book Settings" />
     <x-backpack::menu-dropdown-item title="Authors" icon="la la-book-reader" :link="backpack_url('author')" />
     <x-backpack::menu-dropdown-item title="Book types" icon="la la-swatchbook" :link="backpack_url('book-type')" />
     <x-backpack::menu-dropdown-item title="Publishers" icon="la la-truck-loading" :link="backpack_url('publisher')" />
     <x-backpack::menu-dropdown-item title="Book locations" icon="la la-boxes" :link="backpack_url('book-location')" />
-
-    <x-backpack::menu-dropdown-header title="Book" />
-    <x-backpack::menu-dropdown-item title="Book stocks" icon="la la-box-open" :link="backpack_url('book-stock')" />
-    <x-backpack::menu-dropdown-item title="Books" icon="la la-book" :link="backpack_url('book')" />
 </x-backpack::menu-dropdown>
 
 
