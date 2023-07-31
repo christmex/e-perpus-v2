@@ -27,8 +27,8 @@
             width:160px;
 
             float:left;
-            min-height:100%
-            /* min-height:170px */
+            /* min-height:100% */
+            min-height:170px;
         }
         .box .top {
             border-bottom: 2px solid black
