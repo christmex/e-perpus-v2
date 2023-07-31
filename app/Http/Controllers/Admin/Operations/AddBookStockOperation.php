@@ -48,12 +48,13 @@ trait AddBookStockOperation
 
             $currentEntry = $this->crud->getCurrentEntry();
 
-            $this->crud->field([
-                'name'  => 'book_id',
-                'type'  => 'hidden',
-                'tab'   => 'Form Add Stock',
-                'value' => $currentEntry->id,
-            ]);
+            // We dont need this anymore, but if in the future there is a problem, uncomment this, and change all $entry->id to $inputs['book_id']
+            // $this->crud->field([
+            //     'name'  => 'book_id',
+            //     'type'  => 'hidden',
+            //     'tab'   => 'Form Add Stock',
+            //     'value' => $currentEntry->id,
+            // ]);
             $this->crud->field([
                 'name'          => 'book_name',
                 'label'         => 'Book Name',
@@ -120,8 +121,8 @@ trait AddBookStockOperation
             // dd('got to ' . __METHOD__, $inputs, $entry);
             
             // check jika di book_location udh ada datanya, berarti stocknya ditambah, jika tidak ada datanya berarti buat baru, bgtu juga untuk delete
-            if(!empty($inputs['book_id'])){
-                $findBookStock = BookStock::where('book_id',$inputs['book_id'])->where('book_location_id', $inputs['book_location_id'])->first();
+            if(!empty($entry->id)){
+                $findBookStock = BookStock::where('book_id',$entry->id)->where('book_location_id', $inputs['book_location_id'])->first();
                 if(!empty($findBookStock)){
                     $findBookStock->book_stock_qty = $findBookStock->book_stock_qty + $inputs['book_stock_qty'];
                     $findBookStock->save();

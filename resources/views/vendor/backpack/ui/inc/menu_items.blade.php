@@ -25,7 +25,7 @@
 </x-backpack::menu-dropdown> -->
 
 <x-backpack::menu-dropdown title="Transaction" icon="la la-exchange-alt">
-    <x-backpack::menu-dropdown-item title="Loan Book" icon="la la-exchange-alt" :link="backpack_url('loan-book')" />
-    <x-backpack::menu-dropdown-item title="Return Book" icon="la la-exchange-alt" :link="backpack_url('transaction')" />
+    <!-- <x-backpack::menu-dropdown-item title="Loan Book" icon="la la-exchange-alt" :link="backpack_url('loan-book')" /> -->
+    <x-backpack::menu-dropdown-item title="Transaction" icon="la la-exchange-alt" :link="backpack_url('transaction')" />
     <x-backpack::menu-dropdown-item title="Penalties" icon="la la-coins" :link="backpack_url('penalty')" />
 </x-backpack::menu-dropdown>

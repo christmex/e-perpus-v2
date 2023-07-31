@@ -42,4 +42,8 @@ class Transaction extends Model
     {
         return '<a class="btn btn-sm btn-link" href="?filterShowAll=filterShowAll" data-toggle="tooltip" title="Filter"><i class="la la-filter"></i> Tampilkan Semua</a>';
     }
+    public function createTransactionBtn()
+    {
+        return '<a class="btn btn-primary" href="'.backpack_url('loan-book').'" data-toggle="tooltip" title="Loan Book"><i class="la la-plus"></i> Loan Book</a>';
+    }
 }

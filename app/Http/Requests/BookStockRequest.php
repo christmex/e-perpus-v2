@@ -25,7 +25,7 @@ class BookStockRequest extends FormRequest
     public function rules()
     {
         return [
-            'book_id' => 'required',
+            // 'book_id' => 'required',
             'book_location_id' => 'required',
             'book_stock_qty' => 'required|integer|min:0',
             // 'book_description' => 'required',

@@ -66,6 +66,7 @@ class TransactionCrudController extends CrudController
             ]);
             CRUD::addClause('where','transaction_returned_at',NULL);
             CRUD::addButtonFromModelFunction('top', 'filterShowAll', 'filterShowAll', 'end');
+            CRUD::addButtonFromModelFunction('top', 'createTransactionBtn', 'createTransactionBtn', 'beginning');
         }
         
 

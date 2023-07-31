@@ -25,7 +25,7 @@ class TransactionRequest extends FormRequest
     public function rules()
     {
         return [
-            'book_id' => 'required',
+            // 'book_id' => 'required',
             'book_stock_id' => 'required',
             'member_id' => 'required',
             'transaction_book_qty' => 'required',

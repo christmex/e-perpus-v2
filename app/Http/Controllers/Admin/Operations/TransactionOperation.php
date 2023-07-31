@@ -54,12 +54,13 @@ trait TransactionOperation
                 abort(403, 'No Data');
             }
             
-            $this->crud->field([
-                'name'  => 'book_id',
-                'type'  => 'hidden',
-                'tab'   => 'Loan Form',
-                'value' => $currentEntry->id,
-            ]);
+            // We dont need this anymore, but if in the future there is a problem, uncomment this, and change all $entry->id to $inputs['book_id']
+            // $this->crud->field([
+            //     'name'  => 'book_id',
+            //     'type'  => 'hidden',
+            //     'tab'   => 'Loan Form',
+            //     'value' => $currentEntry->id,
+            // ]);
             $this->crud->field([
                 'name'          => 'book_name',
                 'label'         => 'Book Name',
@@ -148,8 +149,8 @@ trait TransactionOperation
 
         return $this->formAction($id, function ($inputs, $entry) {
             
-            if(!empty($inputs['book_id'])){
-                // $findBookStock = BookStock::where('book_id',$inputs['book_id'])->where('book_location_id', $inputs['book_location_id'])->first();
+            if(!empty($entry->id)){
+                // $findBookStock = BookStock::where('book_id',$entry->id)->where('book_location_id', $inputs['book_location_id'])->first();
                 $findBookStock = BookStock::find($inputs['book_stock_id']);
                 if(!empty($findBookStock)){
                     if($findBookStock->book_stock_qty - $inputs['transaction_book_qty'] >= 0){

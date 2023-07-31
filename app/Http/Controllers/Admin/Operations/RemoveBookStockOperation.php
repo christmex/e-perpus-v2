@@ -45,23 +45,24 @@ trait RemoveBookStockOperation
         );
         $this->crud->operation('removeBookStock', function () {
 
-            $this->crud->setValidation(BookStockRequest::class);
-
             $currentEntry = $this->crud->getCurrentEntry();
             
             if(!$currentEntry->bookStock->count()) {
                 $this->crud->denyAccess('removeBookStock');
                 abort(403, 'No Data');
             }
-            
-            // Add the request validation here
 
-            $this->crud->field([
-                'name'  => 'book_id',
-                'type'  => 'hidden',
-                'tab'   => 'Form Remove Stock',
-                'value' => $currentEntry->id,
-            ]);
+            // Add the request validation here
+            $this->crud->setValidation(BookStockRequest::class);
+
+            
+            // We dont need this anymore, but if in the future there is a problem, uncomment this, and change all $entry->id to $inputs['book_id']
+            // $this->crud->field([
+            //     'name'  => 'book_id',
+            //     'type'  => 'hidden',
+            //     'tab'   => 'Form Remove Stock',
+            //     'value' => $currentEntry->id,
+            // ]);
             $this->crud->field([
                 'name'          => 'book_name',
                 'label'         => 'Book Name',
@@ -131,9 +132,8 @@ trait RemoveBookStockOperation
         return $this->formAction($id, function ($inputs, $entry) {
             // You logic goes here...
             // dd('got to ' . __METHOD__, $inputs, $entry);
-            // dd(empty($inputs['book_id']));
-            if(!empty($inputs['book_id'])){
-                // $findBookStock = BookStock::where('book_id',$inputs['book_id'])->where('book_location_id', $inputs['book_location_id'])->first();
+            if(!empty($entry->id)){
+                // $findBookStock = BookStock::where('book_id',$entry->id)->where('book_location_id', $inputs['book_location_id'])->first();
                 $findBookStock = BookStock::find($inputs['book_location_id']);
                 if(!empty($findBookStock)){
                     DB::beginTransaction();
