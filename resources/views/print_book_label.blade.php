@@ -63,7 +63,7 @@
                         <h4 style="margin-top:10px">{{env('SCHOOL_NAME')}}</h4>
                     </div>
                     <div class="bottom">
-                        <h3>{{$book->bookLocation->book_location_name}}</h3>
+                        <h3>@if($book->bookLocation->book_location_name != '') {{$book->bookLocation->book_location_name}} @else - @endif</h3>
                         <h3>@if($book->bookLocation->book_location_label != '') {{$book->bookLocation->book_location_label}} @else - @endif</h3>
                         <b>{{$request['book_name']}}</b>
                         {{-- <p>{{$book->author->author}}</p> --}}
