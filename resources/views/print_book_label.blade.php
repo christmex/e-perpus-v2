@@ -17,7 +17,17 @@
         .flex {
             display: flex;
             width: 100%;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+
+            flex-direction: column;
+            /* justify-content: space-around;
+            align-content: space-around; */
+        }
+        .flex > div{
+            flex: 1
+        }
+        .flex > .bottom{
+            margin-top: auto;
         }
         .box {
             border: 2px solid black;
@@ -27,8 +37,8 @@
             width:160px;
 
             float:left;
-            /* min-height:100% */
-            min-height:170px;
+            min-height:100%
+            /* min-height:170px; */
         }
         .box .top {
             border-bottom: 2px solid black
@@ -57,17 +67,22 @@
         @foreach($entry->bookStock as $book)
             @for($i = 1;$i <= $request['book_stock_id'][$book->id]; $i++)
                 <div class="box">
-                    <div class="top">
-                        <h3>PERPUSTAKAAN</h3>
-                        <p>SEKOLAH KRISTEN BASIC</p>
-                        <h4 style="margin-top:10px">{{env('SCHOOL_NAME')}}</h4>
+                    <div class="flex">
+                        <div class="top">
+                            <h3>PERPUSTAKAAN</h3>
+                            <p>SEKOLAH KRISTEN BASIC</p>
+                            <h4 style="margin-top:10px">{{env('SCHOOL_NAME')}}</h4>
+                        </div>
+                        <div class="middle">
+                            <h2 style="color:red">{{$request['book_name']}}</h2>
+                        </div>
+                        <div class="bottom">
+                            <h3>@if($book->bookLocation->book_location_name != '') {{$book->bookLocation->book_location_name}} @else - @endif</h3>
+                            <h3>@if($book->bookLocation->book_location_label != '') {{$book->bookLocation->book_location_label}} @else - @endif</h3>
+                            {{-- <p>{{$book->author->author}}</p> --}}
+                        </div>
                     </div>
-                    <div class="bottom">
-                        <h3>@if($book->bookLocation->book_location_name != '') {{$book->bookLocation->book_location_name}} @else - @endif</h3>
-                        <h3>@if($book->bookLocation->book_location_label != '') {{$book->bookLocation->book_location_label}} @else - @endif</h3>
-                        <b>{{$request['book_name']}}</b>
-                        {{-- <p>{{$book->author->author}}</p> --}}
-                    </div>
+                    
                 </div>
                 @if($page_break % $lipat == 0)<div class="pagebreak"> </div>@endif
                 @php $page_break++; @endphp
